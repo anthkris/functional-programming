@@ -1,0 +1,18 @@
+Traversing Arrays
+We would normally use a for loop to iterate through each item in an array. However, when specifying order in which things are presented is not important, you can use forEach to abstract this step.
+
+Exercise 1: Print All the Names in an Array
+
+var names = ["Ben", "Jafar", "Matt", "Priya", "Brian"],
+		counter;
+
+	for(counter = 0; counter < names.length; counter++) {
+		console.log(names[counter]);
+	}
+	
+Exercise 2: Use ForEach to print all the names in an array
+var names = ["Ben", "Jafar", "Matt", "Priya", "Brian"];
+
+	names.forEach(function(name) {
+		console.log(name);
+	});
