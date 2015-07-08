@@ -1,0 +1,242 @@
+  Exercise 16: Implement reduce()
+  //How Reduce works
+  
+  // [1,2,3].reduce(function(accumulatedValue, currentValue) { return accumulatedValue + currentValue; }); === [6];
+// [1,2,3].reduce(function(accumulatedValue, currentValue) { return accumulatedValue + currentValue; }, 10); === [16];
+
+Array.prototype.reduce = function(combiner, initialValue) {
+	var counter,
+		accumulatedValue;
+
+	// If the array is empty, do nothing
+	if (this.length === 0) {
+		return this;
+	}
+	else {
+		// If the user didn't pass an initial value, use the first item.
+		if (arguments.length === 1) {
+			counter = 1;
+			accumulatedValue = this[0];
+		}
+		else if (arguments.length >= 2) {
+			counter = 0;
+			accumulatedValue = initialValue;
+		}
+		else {
+			throw "Invalid arguments.";
+		}
+
+		// Loop through the array, feeding the current value and the result of
+		// the previous computation back into the combiner function until
+		// we've exhausted the entire array and are left with only one value.
+		while(counter < this.length) {
+			accumulatedValue = combiner(accumulatedValue, this[counter])
+			counter++;
+		}
+
+		return [accumulatedValue];
+	}
+};
+
+Exercise 17: Retrieve the largest rating.
+
+	var ratings = [2,3,1,4,5];
+
+	// You should return an array containing only the largest rating. Remember that reduce always
+	// returns an array with one item.
+	return ratings.
+	  reduce(function(a, b) {
+		if(a > b) {
+		  return a;
+		}
+		else {
+		  return b;
+		}
+	  });
+
+Exercise 18: Retrieve url of the largest boxart
+var boxarts = [
+			{ width: 200, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture200.jpg" },
+			{ width: 150, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
+			{ width: 300, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture300.jpg" },
+			{ width: 425, height:150, url:"http://cdn-0.nflximg.com/images/2891/Fracture425.jpg" }
+		];
+
+	// You should return an array containing only the largest box art. Remember that reduce always
+	// returns an array with one item.
+	return boxarts.
+    reduce(function(art1, art2){
+      if (art1.width * art1.height > art2.width * art2.height){
+      	return art1.url;
+      } else {
+      	return art2.url;
+      }
+    });   // Complete this expression
+
+
+//Writer's answer allows for getting the url in other circumstances
+
+	var boxarts = [
+			{ width: 200, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture200.jpg" },
+			{ width: 150, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
+			{ width: 300, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture300.jpg" },
+			{ width: 425, height:150, url:"http://cdn-0.nflximg.com/images/2891/Fracture425.jpg" }
+		];
+
+	// You should return an array containing only the largest box art. Remember that reduce always
+	// returns an array with one item.
+	return boxarts.
+	  reduce(function(acc,curr) {
+		if (acc.width * acc.height > curr.width * curr.height) {
+		  return acc;
+		}
+		else {
+		  return curr;
+		}
+	  }).
+	  map(function(boxart) {
+		return boxart.url;
+	  });
+
+Exercise 19: Reducing with an initial value
+var videos = [
+		{
+			"id": 65432445,
+			"title": "The Chamber"
+		},
+		{
+			"id": 675465,
+			"title": "Fracture"
+		},
+		{
+			"id": 70111470,
+			"title": "Die Hard"
+		},
+		{
+			"id": 654356453,
+			"title": "Bad Boys"
+		}
+	];
+
+	// Expecting this output...
+	// [
+	//     {
+	//         "65432445": "The Chamber",
+	//         "675465": "Fracture",
+	//         "70111470": "Die Hard",
+	//         "654356453": "Bad Boys"
+	//     }
+	// ]
+	return videos.
+		reduce(function(accumulatedMap, video) {
+
+			// Object.create() makes a fast copy of the accumulatedMap by
+			// creating a new object and setting the accumulatedMap to be the
+			// new object's prototype.
+			// Initially the new object is empty and has no members of its own,
+			// except a pointer to the object on which it was based. If an
+			// attempt to find a member on the new object fails, the new object
+			// silently attempts to find the member on its prototype. This
+			// process continues recursively, with each object checking its
+			// prototype until the member is found or we reach the first object
+			// we created.
+			// If we set a member value on the new object, it is stored
+			// directly on that object, leaving the prototype unchanged.
+			// Object.create() is perfect for functional programming because it
+			// makes creating a new object with a different member value almost
+			// as cheap as changing the member on the original object!
+
+			var copyOfAccumulatedMap = Object.create(accumulatedMap);
+
+			copyOfAccumulatedMap[video.id] = video.title;
+
+			return copyOfAccumulatedMap;
+		},
+		// Use an empty map as the initial value instead of the first item in
+		// the list.
+		{});
+
+Exercise 20: Retrieve the id, title, and smallest box art url for every video.
+var movieLists = [
+		{
+			name: "New Releases",
+			videos: [
+				{
+					"id": 70111470,
+					"title": "Die Hard",
+					"boxarts": [
+						{ width: 150, height:200, url:"http://cdn-0.nflximg.com/images/2891/DieHard150.jpg" },
+						{ width: 200, height:200, url:"http://cdn-0.nflximg.com/images/2891/DieHard200.jpg" }
+					],
+					"url": "http://api.netflix.com/catalog/titles/movies/70111470",
+					"rating": 4.0,
+					"bookmark": []
+				},
+				{
+					"id": 654356453,
+					"title": "Bad Boys",
+					"boxarts": [
+						{ width: 200, height:200, url:"http://cdn-0.nflximg.com/images/2891/BadBoys200.jpg" },
+						{ width: 140, height:200, url:"http://cdn-0.nflximg.com/images/2891/BadBoys140.jpg" }
+
+					],
+					"url": "http://api.netflix.com/catalog/titles/movies/70111470",
+					"rating": 5.0,
+					"bookmark": [{ id:432534, time:65876586 }]
+				}
+			]
+		},
+		{
+			name: "Thrillers",
+			videos: [
+				{
+					"id": 65432445,
+					"title": "The Chamber",
+					"boxarts": [
+						{ width: 130, height:200, url:"http://cdn-0.nflximg.com/images/2891/TheChamber130.jpg" },
+						{ width: 200, height:200, url:"http://cdn-0.nflximg.com/images/2891/TheChamber200.jpg" }
+					],
+					"url": "http://api.netflix.com/catalog/titles/movies/70111470",
+					"rating": 4.0,
+					"bookmark": []
+				},
+				{
+					"id": 675465,
+					"title": "Fracture",
+					"boxarts": [
+						{ width: 200, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture200.jpg" },
+						{ width: 120, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture120.jpg" },
+						{ width: 300, height:200, url:"http://cdn-0.nflximg.com/images/2891/Fracture300.jpg" }
+					],
+					"url": "http://api.netflix.com/catalog/titles/movies/70111470",
+					"rating": 5.0,
+					"bookmark": [{ id:432534, time:65876586 }]
+				}
+			]
+		}
+	];
+
+
+	// Use one or more concatMap, map, and reduce calls to create an array with the following items (order doesn't matter)
+	// [
+	//	 {"id": 675465,"title": "Fracture","boxart":"http://cdn-0.nflximg.com/images/2891/Fracture120.jpg" },
+	//	 {"id": 65432445,"title": "The Chamber","boxart":"http://cdn-0.nflximg.com/images/2891/TheChamber130.jpg" },
+	//	 {"id": 654356453,"title": "Bad Boys","boxart":"http://cdn-0.nflximg.com/images/2891/BadBoys140.jpg" },
+	//	 {"id": 70111470,"title": "Die Hard","boxart":"http://cdn-0.nflximg.com/images/2891/DieHard150.jpg" }
+	// ];
+
+	return movieLists.
+		concatMap(function(movieList) {
+      return movieList.videos.concatMap(function(video){
+        return video.boxarts.reduce(function(prev, next){
+          if (prev.width * prev.height < next.width * next.height){
+          	return prev;
+          } else {
+          	return next;
+          }
+        }).map(function(boxart){
+          return {id: video.id,title: video.title, boxart: boxart.url};
+        })
+        
+      })
+		});
